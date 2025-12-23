@@ -1,0 +1,23 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Flask
+flask_session/
+
+# Banco de dados
+*.db
+*.sqlite
+
+# Ambiente
+.env
+
+# Nvim
+*.swp
+*.swo
+*~
+
+# Sistema
+.DS_Store
+Thumbs.db
