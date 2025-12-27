@@ -1,5 +1,6 @@
 from flask import Flask, render_template, session, redirect
 from flask_session import Session
+from helpers import login_required
 from cs50 import SQL
 
 app = Flask(__name__)
