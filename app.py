@@ -1,4 +1,7 @@
+import os
+
 from cs50 import SQL
+from dotenv import load_dotenv
 from flask import Flask, flash, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -7,6 +10,8 @@ from helpers import login_required
 
 app = Flask(__name__)
 
+load_dotenv()
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
@@ -22,13 +27,44 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    return render_template("login.html")
+
+    if request.method == "GET":
+        session.clear()
+        return render_template("login.html")
+
+    else:
+
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if not username:
+            flash("Username is required", "danger")
+            return redirect("/login")
+
+        if not password:
+            flash("Password is required", "danger")
+            return redirect("/login")
+
+        rows = db.execute("SELECT * FROM users WHERE username = ?", username)
+
+        if len(rows) != 1 or not check_password_hash(rows[0]["hash"], password):
+            flash("Incorrect username or password", "danger")
+            return redirect("/login")
+
+        session["user_id"] = rows[0]["id"]
+
+        flash(f"Welcome back, {username}!", "success")
+
+        return redirect("/")
 
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+
+    if session.get("user_id"):
+        return redirect("/")
 
     if request.method == "POST":
 
@@ -54,7 +90,7 @@ def register():
 
         user_exists = db.execute("SELECT * FROM users WHERE username = ?", username)
 
-        if existing_user:
+        if user_exists:
             flash("Username already taken. Please choose another", "danger")
             return redirect("/register")
 
