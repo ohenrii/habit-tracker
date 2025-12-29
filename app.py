@@ -115,7 +115,12 @@ def register():
 
 @app.route("/logout", methods=["GET", "POST"])
 def logout():
+
+    if not session.get("user_id"):
+        return redirect("/login")
+
     session.clear()
+    flash("You have been logged out", "success")
     return redirect("/login")
 
 
