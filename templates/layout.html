@@ -23,7 +23,7 @@
     {% block styles %}{% endblock %}
   </head>
 
-  <body>
+  <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
       <div class="container-fluid">
         <a class="navbar-brand fw-bold" href="/">
@@ -104,9 +104,11 @@
     </div>
     {% endif %} {% endwith %}
 
-    <main class="container my-5">{% block main %}{% endblock %}</main>
+    <main class="container my-5 flex-grow-1">
+      {% block main %}{% endblock %}
+    </main>
 
-    <footer class="bg-light text-center text-muted py-4 mt-5">
+    <footer class="bg-light text-center text-muted py-4 mt-auto">
       <div class="container">
         <p class="mb-0">Habit Tracker © 2025 | CS50 Final Project</p>
         <small>
