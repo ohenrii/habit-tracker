@@ -1,4 +1,4 @@
-# helper functions created with help of ai
+# helper functions created with help of AI
 
 from functools import wraps
 from flask import redirect, session
