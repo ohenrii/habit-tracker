@@ -113,15 +113,57 @@ def register():
         return redirect("/register")
 
 
-@app.route("/logout", methods=["GET", "POST"])
+@app.route("/logout")
 def logout():
-
-    if not session.get("user_id"):
-        return redirect("/login")
 
     session.clear()
     flash("You have been logged out", "success")
     return redirect("/login")
+
+
+@app.route("/habits", methods=["GET", "POST"])
+@login_required
+def habits():
+
+    user_id = session["user_id"]
+
+    if request.method == "POST":
+
+        name = request.form.get("name")
+        name = name.strip()
+
+        if not name:
+            flash("It's necessary to provide the name of the habit", "danger")
+            return redirect("/habits")
+
+        try:
+            db.execute(
+                "INSERT INTO habits (user_id, name) VALUES (?, ?)", user_id, name
+            )
+
+            flash(f"Habit '{name}' successfully created!", "success")
+            return redirect("/habits")
+
+        except Exception as e:
+            flash("Error while creating habit. Try again", "danger")
+            return redirect("/habits")
+
+    habits = db.execute(
+        "SELECT id, name, created_at FROM habits WHERE user_id = ? ORDER BY created_at DESC",
+        user_id,
+    )
+
+    # query loop created with help of AI to show how many days of the week a habit was completed
+    for habit in habits:
+        week_count = db.execute(
+            """SELECT COUNT(*) as count FROM completions 
+                WHERE habit_id = ? 
+                AND completed_date >= date('now', '-7 days')""",
+            habit["id"],
+        )
+        habit["week_count"] = week_count[0]["count"]
+
+    return render_template("habits.html", habits=habits)
 
 
 if __name__ == "__main__":

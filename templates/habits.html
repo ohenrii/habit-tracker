@@ -1,0 +1,106 @@
+{% extends "layout.html" %} {% block title %}My Habits{% endblock %} {% block
+main %}
+<div class="row">
+  <div class="col-lg-10 mx-auto">
+    <div class="d-flex justify-content-center align-items-center mb-4">
+      <h1>My Habits</h1>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h5 class="card-title">Create New Habit</h5>
+        <form action="/habits" method="post" class="row g-3">
+          <div class="col-md-8">
+            <input
+              type="text"
+              class="form-control"
+              name="name"
+              placeholder="Name of the habit (e.g., Drink 2L of water)"
+              autofocus
+            />
+          </div>
+          <div class="col-md-4">
+            <button type="submit" class="btn btn-primary w-100">
+              <i class="bi bi-plus-circle"></i> Add Habit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    {% if habits %}
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Your Habits ({{ habits|length }})</h5>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">Habits</th>
+                <th scope="col">This Week</th>
+                <th scope="col" class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for habit in habits %}
+              <tr>
+                <td>
+                  <strong>{{ habit.name }}</strong>
+                </td>
+                <!--Progess bar created with help of AI-->
+                <td style="width: 250px">
+                  <div class="d-flex align-items-center">
+                    <div class="progress flex-grow-1 me-2" style="height: 25px">
+                      <div
+                        class="progress-bar bg-success"
+                        role="progressbar"
+                        style="width: {{ (habit.week_count / 7 * 100)|round }}%;"
+                      ></div>
+                    </div>
+                    <span><strong>{{ habit.week_count }} of 7</strong></span>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div class="btn-group" role="group">
+                    <a
+                      href="/complete?habit_id={{ habit.id }}"
+                      class="btn btn-sm btn-success"
+                      title="Mark as done today"
+                    >
+                      <i class="bi bi-check-circle"></i>
+                    </a>
+                    <a
+                      href="/edit?habit_id={{ habit.id }}"
+                      class="btn btn-sm btn-warning"
+                      title="Edit"
+                    >
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                    <a
+                      href="/delete?habit_id={{ habit.id }}"
+                      class="btn btn-sm btn-danger"
+                      onclick="return confirm('Are you sure you want to delete this habit? All history will be lost')"
+                      title="Delete"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center" role="alert">
+      <i class="bi bi-info-circle fs-3"></i>
+      <p class="mb-0 mt-2">
+        You don't have any habits yet. Create your first habit above!
+      </p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
