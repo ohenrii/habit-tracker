@@ -29,17 +29,15 @@ block main %}
               name="description"
               rows="3"
               placeholder="Details about the habit"
-            >
-              {{ habit.description or '' }}</textarea
-            >
+            >{{ habit.description or '' }}</textarea>
           </div>
 
           <div class="d-flex gap-2">
             <button type="submit" class="btn btn-primary flex-grow-1">
-              <i class="bi bi-check-lg"></i> Salvar Changes
+              <i class="bi bi-check-lg"></i> Save Changes
             </button>
             <a href="/habits" class="btn btn-secondary">
-              <i class="bi bi-x-lg"></i> Cancelar
+              <i class="bi bi-x-lg"></i> Cancel
             </a>
           </div>
         </form>
