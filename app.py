@@ -20,6 +20,12 @@ Session(app)
 db = SQL("sqlite:///habits.db")
 
 
+@app.route("/")
+@login_required
+def index():
+    return redirect("/habits")
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
@@ -235,7 +241,9 @@ def delete_habit(id):
 @login_required
 def check_habit(id):
 
-    habit = db.execute("SELECT * FROM habits WHERE id = ? AND user_id = ?", id, session["user_id"])
+    habit = db.execute(
+        "SELECT * FROM habits WHERE id = ? AND user_id = ?", id, session["user_id"]
+    )
 
     if not habit:
         flash("Habit not found or access denied", "danger")
@@ -246,13 +254,17 @@ def check_habit(id):
     # isoformat sugested by AI
     today = date.today().isoformat()
 
-    existing = db.execute("SELECT * FROM completions WHERE habit_id = ? AND completed_date = ?", id, today)
+    existing = db.execute(
+        "SELECT * FROM completions WHERE habit_id = ? AND completed_date = ?", id, today
+    )
 
     if existing:
         flash(f"You already marked '{habit_name}' as done today", "warning")
         return redirect("/habits")
 
-    db.execute("INSERT INTO completions (habit_id, completed_date) VALUES (?, ?)", id, today)
+    db.execute(
+        "INSERT INTO completions (habit_id, completed_date) VALUES (?, ?)", id, today
+    )
 
     flash(f"Great! Habit '{habit_name}' marked as done", "success")
 
@@ -264,7 +276,9 @@ def check_habit(id):
 def uncheck_habit(id):
     user_id = session["user_id"]
 
-    habit = db.execute("SELECT id, name FROM habits WHERE id = ? AND user_id = ?", id, user_id)
+    habit = db.execute(
+        "SELECT id, name FROM habits WHERE id = ? AND user_id = ?", id, user_id
+    )
 
     habit_name = habit[0]["name"]
 
@@ -287,16 +301,22 @@ def habit_stats(id):
 
     user_id = session["user_id"]
 
-    habit_rows = db.execute("SELECT id, name, description, created_at FROM habits WHERE id = ? AND user_id = ?", id, user_id)
-    
+    habit_rows = db.execute(
+        "SELECT id, name, description, created_at FROM habits WHERE id = ? AND user_id = ?",
+        id,
+        user_id,
+    )
+
     if not habit_rows:
         flash("Habit not found", "danger")
         return redirect("/habits")
-    
+
     habit = habit_rows[0]
 
     # query created with hepl of AI
-    days_completed = db.execute("SELECT COUNT(*) AS count FROM completions WHERE habit_id = ?", id)[0]["count"]
+    days_completed = db.execute(
+        "SELECT COUNT(*) AS count FROM completions WHERE habit_id = ?", id
+    )[0]["count"]
 
     created_date = date.fromisoformat(habit["created_at"][:10])
     days_since_creation = (date.today() - created_date).days + 1
@@ -307,10 +327,15 @@ def habit_stats(id):
     else:
         completion_percentage = 0
 
-    completion_rows = db.execute("SELECT completed_date FROM completions WHERE habit_id = ? ORDER BY completed_date ASC", id)
+    completion_rows = db.execute(
+        "SELECT completed_date FROM completions WHERE habit_id = ? ORDER BY completed_date ASC",
+        id,
+    )
 
     # variable created ny AI
-    completion_dates = [date.fromisoformat(row["completed_date"]) for row in completion_rows]
+    completion_dates = [
+        date.fromisoformat(row["completed_date"]) for row in completion_rows
+    ]
 
     current_streak = 0
     today = date.today()
@@ -332,15 +357,15 @@ def habit_stats(id):
         max_streak = max(max_streak, streak)
         previous_day = d
 
-    return render_template("habit_stats.html",
+    return render_template(
+        "habit_stats.html",
         habit=habit,
         days_completed=days_completed,
         days_since_creation=days_since_creation,
         completion_percentage=completion_percentage,
         current_streak=current_streak,
-        max_streak=max_streak
+        max_streak=max_streak,
     )
-
 
 
 if __name__ == "__main__":
