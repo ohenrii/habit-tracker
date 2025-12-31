@@ -1,6 +1,6 @@
 # Habit Tracker
 
-#### Video Demo: <PASTE_YOUR_VIDEO_LINK_HERE>
+#### Video Demo:
 
 ## Description
 
