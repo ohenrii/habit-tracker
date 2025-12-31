@@ -1,0 +1,63 @@
+{% extends "layout.html" %} {% block title %} Habit Statistics {% endblock %} {%
+block main %}
+<div class="row">
+  <div class="col-lg-10 mx-auto">
+    <div class="d-flex justify-content-center align-items-center mb-4">
+      <h1>{{ habit.name }}</h1>
+    </div>
+
+    {% if habit.description %}
+    <div class="card shadow-sm mb-4">
+      <div class="card-body text-center">
+        <p class="mb-0 text-muted">{{ habit.description }}</p>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Overview</h5>
+
+        <div class="row text-center">
+          <div class="col-md-4 mb-3 mb-md-0">
+            <h3>{{ days_completed }}</h3>
+            <p class="text-muted mb-0">Total days completed</p>
+          </div>
+
+          <div class="col-md-4 mb-3 mb-md-0">
+            <h3>{{ completion_percentage }}%</h3>
+            <p class="text-muted mb-0">Completion percentage</p>
+          </div>
+
+          <div class="col-md-4">
+            <h3>{{ days_since_creation }}</h3>
+            <p class="text-muted mb-0">Days since creation</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Streaks</h5>
+
+        <div class="row text-center">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <h2 class="text-success">{{ current_streak }}</h2>
+            <p class="text-muted mb-0">Current streak</p>
+          </div>
+
+          <div class="col-md-6">
+            <h2 class="text-primary">{{ max_streak }}</h2>
+            <p class="text-muted mb-0">Best streak</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-center">
+      <a href="/habits" class="btn btn-secondary"> ← Back to My Habits </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
