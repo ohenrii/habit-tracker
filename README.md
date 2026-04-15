@@ -28,7 +28,7 @@ Each user has their own habits, completely isolated from other users. For each h
 
 ## Technologies Used
 
-- **Python 3**
+- **Python**
 - **Flask**
 - **SQLite**
 - **HTML / CSS**
